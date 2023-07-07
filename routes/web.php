@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderController as O;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,9 +26,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', [O::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,3 +35,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::prefix('order')->name('order.')->group(function () {
+    Route::get('/', [O::class, 'create'])->name('create');
+    Route::post('/', [O::class, 'store'])->name('store');
+    Route::get('/edit/{order}', [O::class, 'edit'])->name('edit');
+    Route::put('/edit/{order}', [O::class, 'update'])->name('update');
+    Route::delete('/delete/{order}', [O::class, 'destroy'])->name('destroy');
+});
